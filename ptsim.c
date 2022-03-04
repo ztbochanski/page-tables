@@ -41,8 +41,8 @@ unsigned char get_page(void)
 {
     for (int page_number = 0; page_number < 64; page_number++)
     {
-        printf("page number: %d\n", page_number);
-        if (page_number == 0)
+
+        if (mem[page_number] == 0)
         {
             mem[page_number] = 1;
             return page_number;
@@ -58,7 +58,7 @@ unsigned char get_page(void)
 //
 void new_process(int proc_num, int page_count)
 {
-    // TODO
+    unsigned char page_table_page = get_page();
 }
 
 //
@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
         else if (strcmp(argv[i], "ppt") == 0)
         {
             int proc_num = atoi(argv[++i]);
-            // print_page_table(proc_num);
+            print_page_table(proc_num);
         }
     }
 }
