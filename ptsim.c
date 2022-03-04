@@ -62,7 +62,6 @@ void new_process(int proc_num, int page_count)
     mem[64 + proc_num] = page_table_number;
     for (int i = 0; i < page_count; ++i)
     {
-        printf("%d", i);
         unsigned char new_data_page = get_page();
         int pt_addr = get_address(page_table_number, i);
         mem[pt_addr] = new_data_page;
