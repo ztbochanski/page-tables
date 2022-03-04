@@ -70,6 +70,13 @@ void print_page_free_map(void)
             putchar('\n');
     }
 }
+//
+// Get the page table for a given process
+//
+unsigned char get_page_table(int proc_num)
+{
+    return mem[proc_num + 64];
+}
 
 //
 // Print the address map from virtual pages to physical
