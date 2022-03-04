@@ -58,7 +58,8 @@ unsigned char get_page(void)
 //
 void new_process(int proc_num, int page_count)
 {
-    unsigned char page_table_page = get_page();
+    unsigned char page_table_number = get_page();
+    mem[64 + proc_num] = page_table_number;
 }
 
 //
