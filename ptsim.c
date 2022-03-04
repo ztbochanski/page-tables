@@ -39,7 +39,7 @@ void initialize_mem(void)
 //
 unsigned char get_page(void)
 {
-    for (int page_number = 0; page_number < 64; page_number++)
+    for (int page_number = 0; page_number < PAGE_COUNT; page_number++)
     {
 
         if (mem[page_number] == 0)
