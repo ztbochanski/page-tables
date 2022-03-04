@@ -30,7 +30,6 @@ void initialize_mem(void)
     }
 
     mem[0] = 1;
-    printf("%d\n", mem[0]);
 }
 
 //
@@ -40,7 +39,16 @@ void initialize_mem(void)
 //
 unsigned char get_page(void)
 {
-    // TODO
+    for (int page_number = 0; page_number < 64; page_number++)
+    {
+        printf("page number: %d\n", page_number);
+        if (page_number == 0)
+        {
+            mem[page_number] = 1;
+            return page_number;
+        }
+    }
+    return 0xff;
 }
 
 //
@@ -81,26 +89,26 @@ unsigned char get_page_table(int proc_num)
 //
 // Print the address map from virtual pages to physical
 //
-// void print_page_table(int proc_num)
-// {
-//     printf("--- PROCESS %d PAGE TABLE ---\n", proc_num);
+void print_page_table(int proc_num)
+{
+    printf("--- PROCESS %d PAGE TABLE ---\n", proc_num);
 
-//     // Get the page table for this process
-//     int page_table = get_page_table(proc_num);
+    // Get the page table for this process
+    int page_table = get_page_table(proc_num);
 
-//     // Loop through, printing out used pointers
-//     for (int i = 0; i < PAGE_COUNT; i++)
-//     {
-//         int addr = get_address(page_table, i);
+    // Loop through, printing out used pointers
+    for (int i = 0; i < PAGE_COUNT; i++)
+    {
+        int addr = get_address(page_table, i);
 
-//         int page = mem[addr];
+        int page = mem[addr];
 
-//         if (page != 0)
-//         {
-//             printf("%02x -> %02x\n", i, page);
-//         }
-//     }
-// }
+        if (page != 0)
+        {
+            printf("%02x -> %02x\n", i, page);
+        }
+    }
+}
 
 //
 // Main -- process command line
