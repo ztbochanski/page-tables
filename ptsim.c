@@ -59,12 +59,29 @@ unsigned char get_page(void)
 void new_process(int proc_num, int page_count)
 {
     unsigned char page_table_number = get_page();
-    mem[64 + proc_num] = page_table_number;
+    if (page_table_number == 0xff)
+    {
+        printf("OOM: proc %d: page table\n", proc_num);
+        exit(1);
+    }
+    else
+    {
+        mem[64 + proc_num] = page_table_number;
+    }
+
     for (int i = 0; i < page_count; ++i)
     {
         unsigned char new_data_page = get_page();
-        int pt_addr = get_address(page_table_number, i);
-        mem[pt_addr] = new_data_page;
+        if (new_data_page == 0xff)
+        {
+            printf("OOM: proc %d: page table\n", proc_num);
+            exit(1);
+        }
+        else
+        {
+            int pt_addr = get_address(page_table_number, i);
+            mem[pt_addr] = new_data_page;
+        }
     }
 }
 
