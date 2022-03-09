@@ -75,18 +75,18 @@ unsigned char get_page(void)
 //
 void new_process(int process_number, int page_count)
 {
-    unsigned char physical_page_number = get_page();
-    if (physical_page_number == 0xff)
+    unsigned char page_table_physical_page_num = get_page();
+    if (page_table_physical_page_num == 0xff)
     {
         printf("OOM: proc %d: page table\n", process_number);
         exit(1);
     }
     else
     {
-        mem[64 + process_number] = physical_page_number; // store physical page in page table map
+        mem[64 + process_number] = page_table_physical_page_num; // store physical page in page table map
     }
 
-    for (int i = 0; i < page_count; ++i)
+    for (int virtual_page_number = 0; virtual_page_number < page_count; ++virtual_page_number)
     {
         unsigned char new_physical_page_for_data = get_page();
         if (new_physical_page_for_data == 0xff)
@@ -96,7 +96,7 @@ void new_process(int process_number, int page_count)
         }
         else
         {
-            int pt_addr = get_address(physical_page_number, i);
+            int pt_addr = get_address(page_table_physical_page_num, virtual_page_number);
             mem[pt_addr] = new_physical_page_for_data;
         }
     }
