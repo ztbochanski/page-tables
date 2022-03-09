@@ -20,6 +20,14 @@ int get_address(int page, int offset)
 }
 
 //
+// Get the page table for a given process
+//
+unsigned char get_page_table(int process_number)
+{
+    return mem[process_number + 64];
+}
+
+//
 // Initialize RAM
 //
 void initialize_mem(void)
@@ -30,6 +38,14 @@ void initialize_mem(void)
     }
 
     mem[0] = 1;
+}
+
+//
+// Set zero page free map to 0, freeing that page
+//
+void deallocate_page(int page_number)
+{
+    mem[page_number] = 0;
 }
 
 //
@@ -88,19 +104,16 @@ void new_process(int process_number, int page_count)
 void kill_process(process_number)
 {
     // Get the page table page for this process
-
+    unsigned char page_table_page_number = get_page_table(process_number);
+    printf("page that holds the page table: page number %u\n", page_table_page_number);
     // Get the page table for this process
+    // int page_table_address = get_address(page_table_page_number, 0);
 
     // For each entry in the page table
     //     If it's not 0:
     //         Deallocate that page
 
     // Deallocate the page table page
-}
-
-void deallocate_page(int page_number)
-{
-    mem[page_number] = 0;
 }
 
 //
@@ -119,13 +132,6 @@ void print_page_free_map(void)
         if ((i + 1) % 16 == 0)
             putchar('\n');
     }
-}
-//
-// Get the page table for a given process
-//
-unsigned char get_page_table(int process_number)
-{
-    return mem[process_number + 64];
 }
 
 //
