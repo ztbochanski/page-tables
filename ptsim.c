@@ -56,17 +56,17 @@ unsigned char get_page(void)
 //
 // This includes the new process page table and page_count data pages.
 //
-void new_process(int proc_num, int page_count)
+void new_process(int process_number, int page_count)
 {
     unsigned char physical_page_number = get_page();
     if (physical_page_number == 0xff)
     {
-        printf("OOM: proc %d: page table\n", proc_num);
+        printf("OOM: proc %d: page table\n", process_number);
         exit(1);
     }
     else
     {
-        mem[64 + proc_num] = physical_page_number; // store physical page in page table map
+        mem[64 + process_number] = physical_page_number; // store physical page in page table map
     }
 
     for (int i = 0; i < page_count; ++i)
@@ -74,7 +74,7 @@ void new_process(int proc_num, int page_count)
         unsigned char new_physical_page_for_data = get_page();
         if (new_physical_page_for_data == 0xff)
         {
-            printf("OOM: proc %d: page table\n", proc_num);
+            printf("OOM: proc %d: page table\n", process_number);
             exit(1);
         }
         else
@@ -83,6 +83,19 @@ void new_process(int proc_num, int page_count)
             mem[pt_addr] = new_physical_page_for_data;
         }
     }
+}
+
+void kill_process(process_number)
+{
+    // Get the page table page for this process
+
+    // Get the page table for this process
+
+    // For each entry in the page table
+    //     If it's not 0:
+    //         Deallocate that page
+
+    // Deallocate the page table page
 }
 
 void deallocate_page(int page_number)
@@ -110,20 +123,20 @@ void print_page_free_map(void)
 //
 // Get the page table for a given process
 //
-unsigned char get_page_table(int proc_num)
+unsigned char get_page_table(int process_number)
 {
-    return mem[proc_num + 64];
+    return mem[process_number + 64];
 }
 
 //
 // Print the address map from virtual pages to physical
 //
-void print_page_table(int proc_num)
+void print_page_table(int process_number)
 {
-    printf("--- PROCESS %d PAGE TABLE ---\n", proc_num);
+    printf("--- PROCESS %d PAGE TABLE ---\n", process_number);
 
     // Get the page table for this process
-    int page_table = get_page_table(proc_num);
+    int page_table = get_page_table(process_number);
 
     // Loop through, printing out used pointers
     for (int i = 0; i < PAGE_COUNT; i++)
@@ -158,14 +171,14 @@ int main(int argc, char *argv[])
     {
         if (strcmp(argv[i], "np") == 0)
         {
-            int proc_num = atoi(argv[++i]);
+            int process_number = atoi(argv[++i]);
             int pages = atoi(argv[++i]);
-            new_process(proc_num, pages);
+            new_process(process_number, pages);
         }
-        else if (strcmp(argv[i], "dp") == 0)
+        else if (strcmp(argv[i], "kp") == 0)
         {
-            int proc_num = atoi(argv[++i]);
-            deallocate_page(proc_num);
+            int process_number = atoi(argv[++i]);
+            kill_process(process_number);
         }
         else if (strcmp(argv[i], "pfm") == 0)
         {
@@ -173,8 +186,8 @@ int main(int argc, char *argv[])
         }
         else if (strcmp(argv[i], "ppt") == 0)
         {
-            int proc_num = atoi(argv[++i]);
-            print_page_table(proc_num);
+            int process_number = atoi(argv[++i]);
+            print_page_table(process_number);
         }
     }
 }
