@@ -96,8 +96,8 @@ void new_process(int process_number, int page_count)
         }
         else
         {
-            int pt_addr = get_address(page_table_physical_page_num, virtual_page_number);
-            mem[pt_addr] = new_physical_page_for_data;
+            int page_table_address = get_address(page_table_physical_page_num, virtual_page_number);
+            mem[page_table_address] = new_physical_page_for_data;
         }
     }
 }
