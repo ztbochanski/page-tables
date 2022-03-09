@@ -32,6 +32,7 @@ unsigned char get_page_table(int process_number)
 //
 void initialize_mem(void)
 {
+    // memset(mem, 0, MEM_SIZE);
     for (size_t i = 0; i < MEM_SIZE; ++i)
     {
         mem[i] = 0;
