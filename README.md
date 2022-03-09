@@ -25,6 +25,12 @@ print page table map
 ```bash
 ppt <page_table_number_to_print>
 ``` 
+
+kill process
+```bash
+kp <process_to_kill>
+```
+
 store byte
 ```bash
 sb <process_number> <address> <value_to_store>
