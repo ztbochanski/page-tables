@@ -58,31 +58,36 @@ unsigned char get_page(void)
 //
 void new_process(int proc_num, int page_count)
 {
-    unsigned char page_table_number = get_page();
-    if (page_table_number == 0xff)
+    unsigned char physical_page_number = get_page();
+    if (physical_page_number == 0xff)
     {
         printf("OOM: proc %d: page table\n", proc_num);
         exit(1);
     }
     else
     {
-        mem[64 + proc_num] = page_table_number;
+        mem[64 + proc_num] = physical_page_number; // store physical page in page table map
     }
 
     for (int i = 0; i < page_count; ++i)
     {
-        unsigned char new_data_page = get_page();
-        if (new_data_page == 0xff)
+        unsigned char new_physical_page_for_data = get_page();
+        if (new_physical_page_for_data == 0xff)
         {
             printf("OOM: proc %d: page table\n", proc_num);
             exit(1);
         }
         else
         {
-            int pt_addr = get_address(page_table_number, i);
-            mem[pt_addr] = new_data_page;
+            int pt_addr = get_address(physical_page_number, i);
+            mem[pt_addr] = new_physical_page_for_data;
         }
     }
+}
+
+void deallocate_page(int page_number)
+{
+    mem[page_number] = 0;
 }
 
 //
@@ -156,6 +161,11 @@ int main(int argc, char *argv[])
             int proc_num = atoi(argv[++i]);
             int pages = atoi(argv[++i]);
             new_process(proc_num, pages);
+        }
+        else if (strcmp(argv[i], "dp") == 0)
+        {
+            int proc_num = atoi(argv[++i]);
+            deallocate_page(proc_num);
         }
         else if (strcmp(argv[i], "pfm") == 0)
         {
