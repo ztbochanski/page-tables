@@ -68,6 +68,11 @@ unsigned char get_page(void)
     return 0xff;
 }
 
+void set_page_table_entry(int page_table_physical_page_num, int virtual_page_number, int new_physical_page_for_data)
+{
+    int page_table_address = get_address(page_table_physical_page_num, virtual_page_number);
+    mem[page_table_address] = new_physical_page_for_data;
+}
 //
 // Allocate pages for a new process
 //
@@ -96,8 +101,9 @@ void new_process(int process_number, int page_count)
         }
         else
         {
-            int page_table_address = get_address(page_table_physical_page_num, virtual_page_number);
-            mem[page_table_address] = new_physical_page_for_data;
+            set_page_table_entry(page_table_physical_page_num, virtual_page_number, new_physical_page_for_data);
+            // int page_table_address = get_address(page_table_physical_page_num, virtual_page_number);
+            // mem[page_table_address] = new_physical_page_for_data;
         }
     }
 }
