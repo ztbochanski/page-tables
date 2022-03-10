@@ -68,11 +68,15 @@ unsigned char get_page(void)
     return 0xff;
 }
 
+//
+// set a new process data pages in the right address location of the page table
+//
 void set_page_table_entry(int page_table_physical_page_num, int virtual_page_number, int new_physical_page_for_data)
 {
     int page_table_address = get_address(page_table_physical_page_num, virtual_page_number);
     mem[page_table_address] = new_physical_page_for_data;
 }
+
 //
 // Allocate pages for a new process
 //
@@ -84,7 +88,7 @@ void new_process(int process_number, int page_count)
     if (page_table_physical_page_num == 0xff)
     {
         printf("OOM: proc %d: page table\n", process_number);
-        exit(1);
+        return;
     }
     else
     {
@@ -97,7 +101,7 @@ void new_process(int process_number, int page_count)
         if (new_physical_page_for_data == 0xff)
         {
             printf("OOM: proc %d: page table\n", process_number);
-            exit(1);
+            return;
         }
         else
         {
