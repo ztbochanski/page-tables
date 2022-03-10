@@ -71,10 +71,10 @@ unsigned char get_page(void)
 //
 // set a new process data pages in the right address location of the page table
 //
-void set_page_table_entry(int page_table_physical_page_num, int virtual_page_number, int new_physical_page_for_data)
+void set_page_table_entry(int page_table, int virtual_page, int new_page)
 {
-    int page_table_address = get_address(page_table_physical_page_num, virtual_page_number);
-    mem[page_table_address] = new_physical_page_for_data;
+    int page_table_address = get_address(page_table, virtual_page);
+    mem[page_table_address] = new_page;
 }
 
 //
@@ -84,47 +84,47 @@ void set_page_table_entry(int page_table_physical_page_num, int virtual_page_num
 //
 void new_process(int process_number, int page_count)
 {
-    unsigned char page_table_physical_page_num = get_page();
-    if (page_table_physical_page_num == 0xff)
+    unsigned char page_table = get_page();
+    if (page_table == 0xff)
     {
         printf("OOM: proc %d: page table\n", process_number);
         return;
     }
     else
     {
-        mem[64 + process_number] = page_table_physical_page_num; // store physical page in page table map
+        mem[64 + process_number] = page_table; // store physical page in page table map
     }
 
-    for (int virtual_page_number = 0; virtual_page_number < page_count; ++virtual_page_number)
+    for (int virtual_page = 0; virtual_page < page_count; ++virtual_page)
     {
-        unsigned char new_physical_page_for_data = get_page();
-        if (new_physical_page_for_data == 0xff)
+        unsigned char new_page = get_page();
+        if (new_page == 0xff)
         {
             printf("OOM: proc %d: page table\n", process_number);
             return;
         }
         else
         {
-            set_page_table_entry(page_table_physical_page_num, virtual_page_number, new_physical_page_for_data);
-            // int page_table_address = get_address(page_table_physical_page_num, virtual_page_number);
-            // mem[page_table_address] = new_physical_page_for_data;
+            set_page_table_entry(page_table, virtual_page, new_page);
         }
     }
 }
 
 void kill_process(process_number)
 {
-    // Get the page table page for this process
-    unsigned char page_table_page_number = get_page_table(process_number);
-    printf("page that holds the page table: page number %u\n", page_table_page_number);
-    // Get the page table for this process
-    // int page_table_address = get_address(page_table_page_number, 0);
+    int page_table = get_page_table(process_number);
 
-    // For each entry in the page table
-    //     If it's not 0:
-    //         Deallocate that page
+    for (int offset = 0; offset < PAGE_COUNT; offset++)
+    {
+        int address = get_address(page_table, offset);
+        int data_page = mem[address];
 
-    // Deallocate the page table page
+        if (data_page != 0)
+        {
+            deallocate_page(data_page);
+        }
+    }
+    deallocate_page(page_table);
 }
 
 //
