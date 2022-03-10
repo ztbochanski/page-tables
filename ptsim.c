@@ -162,6 +162,21 @@ void kill_process(process_number)
 }
 
 //
+// sb store byte
+//
+void store_value(int process_number, int virtual_address, int value)
+{
+    int physical_address = get_physical_address(process_number, virtual_address);
+    mem[physical_address] = value;
+    printf("Store process %d: %d => %d, value=%d\n",
+           process_number, virtual_address, physical_address, value);
+}
+
+//
+// lb load byte
+//
+
+//
 // Print the free page map
 //
 void print_page_free_map(void)
@@ -231,8 +246,7 @@ int main(int argc, char *argv[])
             int process_number = atoi(argv[++i]);
             int virtual_address = atoi(argv[++i]);
             int value = atoi(argv[++i]);
-            get_physical_address(process_number, virtual_address);
-            // new_process(process_number, pages);
+            store_value(process_number, virtual_address, value);
         }
         else if (strcmp(argv[i], "kp") == 0)
         {
