@@ -30,25 +30,13 @@ int get_physical_address(int process_number, int virtual_address)
     // get the offset
     int offset = virtual_address & 255;
 
-    printf("virtual page: %d\n", virtual_page);
-    printf("offset: %d\n", offset);
-
     // get physical page from the page table
     int page_table = mem[process_number + 64];
     int address = (page_table << PAGE_SHIFT) | virtual_page;
-
-    printf("page table: %d\n", page_table);
-    printf("page_table_address: %d\n", address);
-
     int physical_page = mem[address];
 
-    printf("physical page: %d\n", physical_page);
-
-    // build physical address from physical page and offset
+    // build physical address
     int physical_address = (physical_page << PAGE_SHIFT) | offset;
-
-    printf("physical address: %d\n", physical_address);
-
     return physical_address;
 }
 
@@ -175,6 +163,13 @@ void store_value(int process_number, int virtual_address, int value)
 //
 // lb load byte
 //
+void load_value(process_number, virtual_address)
+{
+    int physical_address = get_physical_address(process_number, virtual_address);
+    int value = mem[physical_address];
+    printf("Load proc %d: %d => %d, value=%d\n",
+           process_number, virtual_address, physical_address, value);
+}
 
 //
 // Print the free page map
@@ -247,6 +242,12 @@ int main(int argc, char *argv[])
             int virtual_address = atoi(argv[++i]);
             int value = atoi(argv[++i]);
             store_value(process_number, virtual_address, value);
+        }
+        else if (strcmp(argv[i], "lb") == 0)
+        {
+            int process_number = atoi(argv[++i]);
+            int virtual_address = atoi(argv[++i]);
+            load_value(process_number, virtual_address);
         }
         else if (strcmp(argv[i], "kp") == 0)
         {
