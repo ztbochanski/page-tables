@@ -20,9 +20,43 @@ int get_address(int page, int offset)
 }
 
 //
+// convert a virtual address to a physical page
+//
+int get_physical_address(int process_number, int virtual_address)
+{
+    // get virtual page
+    int virtual_page = virtual_address >> PAGE_SHIFT;
+
+    // get the offset
+    int offset = virtual_address & 255;
+
+    printf("virtual page: %d\n", virtual_page);
+    printf("offset: %d\n", offset);
+
+    // get physical page from the page table
+    int page_table = mem[process_number + 64];
+    int address = (page_table << PAGE_SHIFT) | virtual_page;
+
+    printf("page table: %d\n", page_table);
+    printf("page_table_address: %d\n", address);
+
+    int physical_page = mem[address];
+
+    printf("physical page: %d\n", physical_page);
+
+    // build physical address from physical page and offset
+    int physical_address = (physical_page << PAGE_SHIFT) | offset;
+
+    printf("physical address: %d\n", physical_address);
+
+    return physical_address;
+}
+
+//
 // Get the page table for a given process
 //
-unsigned char get_page_table(int process_number)
+unsigned char
+get_page_table(int process_number)
 {
     return mem[process_number + 64];
 }
@@ -197,7 +231,8 @@ int main(int argc, char *argv[])
             int process_number = atoi(argv[++i]);
             int virtual_address = atoi(argv[++i]);
             int value = atoi(argv[++i]);
-            new_process(process_number, pages);
+            get_physical_address(process_number, virtual_address);
+            // new_process(process_number, pages);
         }
         else if (strcmp(argv[i], "kp") == 0)
         {
