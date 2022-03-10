@@ -192,6 +192,13 @@ int main(int argc, char *argv[])
             int pages = atoi(argv[++i]);
             new_process(process_number, pages);
         }
+        else if (strcmp(argv[i], "sb") == 0)
+        {
+            int process_number = atoi(argv[++i]);
+            int virtual_address = atoi(argv[++i]);
+            int value = atoi(argv[++i]);
+            new_process(process_number, pages);
+        }
         else if (strcmp(argv[i], "kp") == 0)
         {
             int process_number = atoi(argv[++i]);
